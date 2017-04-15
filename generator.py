@@ -13,7 +13,7 @@ def color(X, Y, mode='rgb', show_expr=False):
     """
     Returns a colored array.
     Color channels are generated through random sin/cos expressions.
-    All values in array are between 0 and 1.
+    All values in returned array are between 0 and 1.
 
     Parameters
     ----------
@@ -25,7 +25,7 @@ def color(X, Y, mode='rgb', show_expr=False):
         'rgb': ('Red', 'Green', 'Blue'),
         'hsv': ('Hue', 'Saturation', 'Value'),
     }
-    TF = {
+    TRANSF = {
         'rgb': lambda a: a,
         'hsv': lambda a: 2 * hsv_to_rgb(.5 * (1 + a)) - 1,
     }
@@ -35,12 +35,8 @@ def color(X, Y, mode='rgb', show_expr=False):
     if show_expr:
         for label, channel in zip(labels, channels):
             print('{}:'.format(label), channel)
-    tf = TF[mode]
+    tf = TRANSF[mode]
     return tf(np.dstack((channel(X, Y) for channel in channels)))
-
-
-def binarize(c, step=.1):
-    return step * np.round(c / step)
 
 
 def save(image, fname='vision.png'):
