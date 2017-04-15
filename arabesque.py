@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import hsv_to_rgb
 from expressions import mkexpr
-from scipy.misc import imresize
 import pygame
 
 
@@ -37,15 +36,12 @@ def color(X, Y, mode='rgb', show_expr=False):
     if show_expr:
         for label, channel in zip(labels, channels):
             print('{}:'.format(label), channel)
-    return TF[mode](np.dstack((channel(X, Y) for channel in channels)))
+    tf = TF[mode]
+    return tf(np.dstack((channel(X, Y) for channel in channels)))
 
 
 def binarize(c, step=.1):
     return step * np.round(c / step)
-
-
-def smooth(image):
-    return imresize(image, 1., interp='nearest')
 
 
 def show(image):
@@ -57,11 +53,6 @@ def save(image, fname='arabesque.png'):
     s = pygame.Surface((image.shape[0], image.shape[1]))
     pygame.surfarray.blit_array(s, make255(image))
     pygame.image.save(s, fname)
-
-
-def saveall(image):
-    save(image, fname='original.png')
-    save(smooth(image), fname='smoothed.png')
 
 
 def weight(c, weights):
