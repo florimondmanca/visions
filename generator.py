@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from matplotlib.colors import hsv_to_rgb
 from expressions import mkexpr
 import pygame
@@ -44,96 +43,19 @@ def binarize(c, step=.1):
     return step * np.round(c / step)
 
 
-def show(image):
-    plt.imshow(image, interpolation='nearest')
-    plt.show()
-
-
-def save(image, fname='arabesque.png'):
+def save(image, fname='vision.png'):
     s = pygame.Surface((image.shape[0], image.shape[1]))
     pygame.surfarray.blit_array(s, make255(image))
     pygame.image.save(s, fname)
-
-
-def weight(c, weights):
-    return c * np.array(weights)
-
-
-def warp(c1, c2, t):
-    return c1 + t * (c2 - c1)
 
 
 def make255(c):
     return 255 * abs(c)
 
 
-def animate_w(size, mode='rgb', fps=30):
-    def rand(shape):
-        return 2 * np.random.random(shape) - 1
-
+def display(size, mode='rgb', fps=30):
     def show_help():
-        print('Enter: change figure')
-        print('Space bar: toggle flickering')
-        print('R, G or B: focus on red, green or blue channel')
-        print('Backspace: focus all channels')
-        print('Up or down: increase or decrease flickering speed')
-        print('Q: quit')
-        print('H: show this help')
-    X, Y = mkXY(size)
-    c = color(X, Y, mode)
-    w = np.array([1, 1, 1])
-    speed = .05
-    flicker = True
-    try:
-        screen = pygame.display.set_mode((size, size))
-        clock = pygame.time.Clock()
-        show_help()
-        running = True
-        while running:
-            clock.tick(fps)
-            # make the weights vary slightly
-            w = np.clip(w + flicker * speed * rand(w.shape), 0, 1)
-            pygame.surfarray.blit_array(screen, make255(weight(c, w)))
-            pygame.display.flip()
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RETURN:
-                        c = color(X, Y, mode)
-                    if event.key == pygame.K_SPACE:
-                        flicker = not flicker
-                        print('flickering ' + ('on' if flicker else 'off'))
-                    if event.key == pygame.K_UP:
-                        speed = min(speed + .05, .5)
-                        print('flickering speed:', speed)
-                    if event.key == pygame.K_DOWN:
-                        speed = max(speed - .05, 0)
-                        print('flickering speed:', speed)
-                    if event.key == pygame.K_BACKSPACE:
-                        w[:] = (1, 1, 1)
-                        print('all channels focused')
-                    if event.key == pygame.K_r:
-                        w[:] = (1, 0, 0)
-                        print('red channel focused')
-                    if event.key == pygame.K_g:
-                        w[:] = (0, 1, 0)
-                        print('green channel focused')
-                    if event.key == pygame.K_b:
-                        w[:] = (0, 0, 1)
-                        print('blue channel focused')
-                    if event.key == pygame.K_h:
-                        show_help()
-                    if event.key == pygame.K_q:
-                        running = False
-                        print('quitting')
-    finally:
-        pygame.quit()
-
-
-def saver(size, mode='rgb', fps=30):
-    def show_help():
-        print('Enter: change figure')
+        print('Enter: change vision')
         print('S: save')
         print('Q: quit')
         print('H: show this help')
@@ -155,7 +77,7 @@ def saver(size, mode='rgb', fps=30):
                     if event.key == pygame.K_RETURN:
                         c = color(X, Y, mode)
                     if event.key == pygame.K_s:
-                        pygame.image.save(screen, 'arabesque_s.png')
+                        pygame.image.save(screen, 'vision.png')
                         print('Image saved')
                     if event.key == pygame.K_h:
                         show_help()
@@ -166,9 +88,12 @@ def saver(size, mode='rgb', fps=30):
         pygame.quit()
 
 
-def animate_t(size, mode='rgb', fps=30):
+def animate(size, mode='rgb', fps=30):
     def rand(shape):
         return 2 * np.random.random(shape) - 1
+
+    def warp(c1, c2, t):
+        return c1 + t * (c2 - c1)
 
     def ti(i, n):
         t = i * np.pi / n * np.ones(3)
@@ -223,7 +148,3 @@ def animate_t(size, mode='rgb', fps=30):
                         print('quitting')
     finally:
         pygame.quit()
-
-
-if __name__ == '__main__':
-    plt.ion()
