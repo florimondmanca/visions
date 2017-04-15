@@ -11,3 +11,6 @@ Ces dix images sont le résultat d'une ou deux heures passées à générer des 
 Et les visions que j'ai gardées, alors ? J'y viens. Si j'ai réussi à leur trouver un peu de sens, il était important pour moi de ne pas vous les montrer nues : hors de question que vous leur associez un sens qui ne soit pas celui que je veux vous transmettre. Il manquait donc à ces visions un attribut qui pourrait permettre à chacun de les interpréter correctement. Du coup, j'ai immédiatement attribué à chaque vision un titre. Cette attribution ne devait jamais prendre plus d'une seconde : plus et ma sensibilité de l'instant se serait dissipée et il n'est pas certain que le titre choisi retranscrive sincèrement le sens que j'avais extrait. Avec le recul, certains titres n'ont pas grand chose à voir avec ce que ces visions figées m'inspirent — et c'est très bien comme ça.
 
 Faites donc ce que vous voulez de tout ça. Moi, ça m'est venu comme ça, donc je vous le montre.
+
+Oh, et au cas où le code source vous intéresserait :
+https://github.com/mancaf/visions
