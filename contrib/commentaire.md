@@ -12,5 +12,4 @@ Et les visions que j'ai gardées, alors ? J'y viens. Si j'ai réussi à leur tro
 
 Faites donc ce que vous voulez de tout ça. Moi, ça m'est venu comme ça, donc je vous le montre.
 
-Oh, et au cas où le code source vous intéresserait :
-https://github.com/mancaf/visions
+(Si le code source vous intéresse, le dépôt s'appelle `visions`.)
