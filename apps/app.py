@@ -1,28 +1,25 @@
-from core.common import makeshape, mkXY, make255, color
-from contextlib import contextmanager
+from core.common import mkXY, make255, color
 import pygame
-
-
-@contextmanager
-def pygamecontext():
-    pygame.init()
-    yield
-    pygame.quit()
 
 
 class RenderApp:
     app = 'Visions'
     name = ''
 
-    def __init__(self, size, fps, mode='rgb'):
-        shape = makeshape(size)
-        self.screen = pygame.display.set_mode(shape)
-        pygame.display.set_caption('{} - {}'.format(self.app, self.name))
+    def __init__(self, screen, fps, mode='rgb'):
+        self.screen = screen
         self.clock = pygame.time.Clock()
         self.fps = fps
         self.mode = mode
-        self.X, self.Y = mkXY(shape)
+        self.X, self.Y = mkXY(self.screen.get_size())
         self.running = False
+
+    def __enter__(self):
+        pygame.init()
+        self.running = True
+
+    def __exit__(self, *args):
+        pygame.quit()
 
     def render(self, size=1):
         if size == 1:
@@ -56,13 +53,13 @@ class RenderApp:
     def drawn_image(self):
         raise NotImplementedError
 
-    def draw(self):
+    def draw(self, flip=True):
         pygame.surfarray.blit_array(self.screen, make255(self.drawn_image()))
-        pygame.display.flip()
+        if flip:
+            pygame.display.flip()
 
-    def run(self):
-        self.running = True
-        with pygamecontext():
+    def run(self, flip=True):
+        with self:
             while self.running:
                 self.clock.tick(self.fps)
                 self._events()

@@ -1,29 +1,30 @@
 import numpy as np
 from apps.app import RenderApp
 import pygame
+from imageio import mimwrite
 
 
 class Timer:
 
     def __init__(self, fps, freq):
-        self.counter = 0
+        self.t = 0
         self.fps = fps
         self.freq = freq
+        self.period = 1 / self.freq
+        self.dt = 1 / self.fps
 
     def tick(self):
-        self.counter += 1 / self.fps
+        self.t += self.dt
 
     def accelerate(self, df=.1):
         self.freq = min(self.freq + df, self.fps // 2)
+        self.period = 1 / self.freq
         print('Timer freq:', self.freq)
 
     def slowdown(self, df=.1):
         self.freq = max(0, self.freq - df)
+        self.period = 1 / self.freq
         print('Timer freq:', self.freq)
-
-    @property
-    def t(self):
-        return self.counter
 
     @property
     def sint(self):
@@ -33,10 +34,10 @@ class Timer:
 class App(RenderApp):
     name = "Warps"
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, freq=.1, **kwargs):
         super(App, self).__init__(*args, **kwargs)
         self.c1, self.c2 = self.render(2)
-        self.timer = Timer(self.fps, freq=0.1)
+        self.timer = Timer(self.fps, freq)
         self.warping = True
 
     def key_events(self, key):
@@ -63,5 +64,20 @@ class App(RenderApp):
         super().show_help()
 
 
+def makevideo(size, freq=1, dt=.1):
+    app = App(pygame.Surface(size), fps=30, freq=freq)
+    images = []
+    with app:
+        print('rendering images...')
+        for step in range(int(app.timer.period / app.timer.dt)):
+            app.update()
+            app.draw(flip=False)
+            images.append(pygame.surfarray.array3d(app.screen))
+        print('successfully rendered images')
+    print('making animation...')
+    mimwrite('visions.mp4', images, fps=10)
+    print('successfully created animation')
+
+
 if __name__ == '__main__':
-    App(size=(1024, 600), fps=30, mode='rgb').run()
+    makevideo((512, 1024))

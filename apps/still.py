@@ -26,4 +26,4 @@ class App(RenderApp):
 
 
 if __name__ == '__main__':
-    App((1024, 600), fps=30).run()
+    App(pygame.display.set_mode((1024, 600)), fps=30).run()
