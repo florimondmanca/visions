@@ -14,7 +14,7 @@ def makeshape(size):
 def mkXY(shape):
     nx, ny = shape
     x, y = np.linspace(-1, 1, nx), np.linspace(-1, 1, ny)
-    return np.meshgrid(x, y)
+    return np.meshgrid(y, x)
 
 
 def color(X, Y, mode='rgb', show_expr=False):

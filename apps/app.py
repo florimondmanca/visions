@@ -22,8 +22,6 @@ class RenderApp:
         self.fps = fps
         self.mode = mode
         self.X, self.Y = mkXY(shape)
-        self.X = self.X.T
-        self.Y = self.Y.T
         self.running = False
 
     def render(self, size=1):
