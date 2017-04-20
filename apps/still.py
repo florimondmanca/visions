@@ -1,4 +1,4 @@
-from common import mkXY, color, make255, RenderApp
+from apps.app import RenderApp
 import pygame
 
 
@@ -7,14 +7,14 @@ class App(RenderApp):
 
     def __init__(self, *args, **kwargs):
         super(App, self).__init__(*args, **kwargs)
-        self.c = color(self.X, self.Y, self.mode)
+        self.c = self.render()
 
     def drawn_image(self):
         return self.c
 
     def key_events(self, key):
         if key == pygame.K_RETURN:
-            self.c = color(self.X, self.Y, self.mode)
+            self.c = self.render()
         if key == pygame.K_s:
             pygame.image.save(self.screen, 'vision.png')
             print('Image saved')
@@ -26,4 +26,4 @@ class App(RenderApp):
 
 
 if __name__ == '__main__':
-    App(size=(800, 600), fps=30, mode='rgb').run()
+    App((1024, 600), fps=30).run()

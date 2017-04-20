@@ -1,62 +1,6 @@
-import numpy as np
-from matplotlib.colors import hsv_to_rgb
-from expressions import mkexpr
-import pygame
+from core.common import makeshape, mkXY, make255, color
 from contextlib import contextmanager
-
-
-def makeshape(size):
-    try:
-        size[0], size[1]
-        return size[:2]
-    except TypeError:
-        return (size, size)
-
-
-def mkXY(shape):
-    nx, ny = shape
-    x, y = np.linspace(-1, 1, nx), np.linspace(-1, 1, ny)
-    return np.meshgrid(x, y)
-
-
-def color(X, Y, mode='rgb', show_expr=False):
-    """
-    Returns a colored array.
-    Color channels are generated through random sin/cos expressions.
-    All values in returned array are between 0 and 1.
-
-    Parameters
-    ----------
-    X, Y : meshgrid
-    mode: 'rgb' | 'hsv'
-    show_expr: True | False
-    """
-    LABELS = {
-        'rgb': ('Red', 'Green', 'Blue'),
-        'hsv': ('Hue', 'Saturation', 'Value'),
-    }
-    TRANSF = {
-        'rgb': lambda a: a,
-        'hsv': lambda a: 2 * hsv_to_rgb(.5 * (1 + a)) - 1,
-    }
-    a, b, c = mkexpr(), mkexpr(), mkexpr()  # channels
-    channels = [a, b, c]
-    labels = LABELS[mode]
-    if show_expr:
-        for label, channel in zip(labels, channels):
-            print('{}:'.format(label), channel)
-    tf = TRANSF[mode]
-    return tf(np.dstack((channel(X, Y) for channel in channels)))
-
-
-def save(image, fname='vision.png'):
-    s = pygame.Surface((image.shape[0], image.shape[1]))
-    pygame.surfarray.blit_array(s, make255(image))
-    pygame.image.save(s, fname)
-
-
-def make255(c):
-    return 255 * abs(c)
+import pygame
 
 
 @contextmanager
@@ -70,7 +14,7 @@ class RenderApp:
     app = 'Visions'
     name = ''
 
-    def __init__(self, size, fps, mode):
+    def __init__(self, size, fps, mode='rgb'):
         shape = makeshape(size)
         self.screen = pygame.display.set_mode(shape)
         pygame.display.set_caption('{} - {}'.format(self.app, self.name))
@@ -81,6 +25,14 @@ class RenderApp:
         self.X = self.X.T
         self.Y = self.Y.T
         self.running = False
+
+    def render(self, size=1):
+        if size == 1:
+            return color(self.X, self.Y, self.mode)
+        renders = []
+        for _ in range(size):
+            renders.append(color(self.X, self.Y, self.mode))
+        return renders
 
     def _events(self):
         for event in pygame.event.get():
