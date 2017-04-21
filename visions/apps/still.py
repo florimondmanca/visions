@@ -17,7 +17,7 @@ class App(RenderApp):
         if key == pygame.K_RETURN:
             self.c = self.render()
         if key == pygame.K_s:
-            pygame.image.save(self.screen, 'vision.png')
+            pygame.image.save(self.screen, 'renders/img/vision.png')
             print('Image saved')
 
     def show_help():
