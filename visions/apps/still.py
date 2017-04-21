@@ -1,5 +1,6 @@
-from apps.app import RenderApp
+from .app import RenderApp
 import pygame
+import click
 
 
 class App(RenderApp):
@@ -25,5 +26,8 @@ class App(RenderApp):
         super().show_help()
 
 
-if __name__ == '__main__':
-    App(pygame.display.set_mode((1024, 600)), fps=30).run()
+@click.command()
+@click.option('--size', default=(1024, 512), help='Canvas size (w, h) - px')
+@click.option('--fps', default=30, help='Animation fps')
+def main(size, fps):
+    App(pygame.display.set_mode(size), fps=fps).run()

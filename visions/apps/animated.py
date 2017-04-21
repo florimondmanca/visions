@@ -1,7 +1,7 @@
 import numpy as np
-from apps.app import RenderApp
+from .app import RenderApp
 import pygame
-from imageio import mimwrite
+import click
 
 
 class Timer:
@@ -27,8 +27,8 @@ class Timer:
         print('Timer freq:', self.freq)
 
     @property
-    def sint(self):
-        return .5 * (1 + np.sin(2 * np.pi * self.freq * self.t * np.ones(3)))
+    def cost(self):
+        return .5 * (1 + np.cos(2 * np.pi * self.freq * self.t * np.ones(3)))
 
 
 class App(RenderApp):
@@ -55,7 +55,7 @@ class App(RenderApp):
         self.timer.tick()
 
     def drawn_image(self):
-        return self.c1 + self.timer.sint * (self.c2 - self.c1)
+        return self.c1 + self.timer.cost * (self.c2 - self.c1)
 
     def show_help(self):
         print('Enter: change figure')
@@ -64,20 +64,10 @@ class App(RenderApp):
         super().show_help()
 
 
-def makevideo(size, freq=1, dt=.1):
-    app = App(pygame.Surface(size), fps=30, freq=freq)
-    images = []
-    with app:
-        print('rendering images...')
-        for step in range(int(app.timer.period / app.timer.dt)):
-            app.update()
-            app.draw(flip=False)
-            images.append(pygame.surfarray.array3d(app.screen))
-        print('successfully rendered images')
-    print('making animation...')
-    mimwrite('visions.mp4', images, fps=10)
-    print('successfully created animation')
-
-
-if __name__ == '__main__':
-    makevideo((512, 1024))
+@click.command()
+@click.option('--size', default=(1024, 512), help='Canvas size (h, w) - px')
+@click.option('--freq', default=.1, help='Oscillation frequency - Hz')
+@click.option('--fps', default=30, help='Animation fps')
+def main(size, freq, fps):
+    screen = pygame.display.set_mode(size)
+    App(screen, fps=fps, freq=freq).run()
